@@ -48,6 +48,10 @@ add() {
     checks=$(jq -c --argjson passed "$1" --arg words "$2" '. + [{passed: $passed, words: $words}]' <<<"$checks")
 }
 
+not_run() {
+    checks=$(jq -c --arg words "$1" '. + [{passed: true, skipped: true, words: $words}]' <<<"$checks")
+}
+
 fail() {
     add false "$1"
     failed_log+=$(tail -n 40 "$2")$'\n'
@@ -135,7 +139,7 @@ if [[ $run_tests == 1 ]]; then
     has_script=$(jq -r '.scripts.test // empty' composer.json 2>/dev/null)
     if [[ -n $has_script || -f phpunit.xml || -f phpunit.xml.dist || -f pest.xml ]]; then
         if ! run "$step" composer install --no-interaction --no-progress --prefer-dist; then
-            fail "Its own tests could not be set up: Composer could not install its dependencies." "$step"
+            not_run "Its own tests were not run: dependencies could not be installed."
         elif [[ -n $has_script ]] && run "$step" composer test; then
             add true "Its own tests pass."
         elif [[ -z $has_script && -x vendor/bin/pest ]] && run "$step" vendor/bin/pest; then

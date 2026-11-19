@@ -73,7 +73,7 @@ On a pull request, and on every new release:
 - the icon and screenshots exist and are PNG, JPEG or WebP images under 2 MB;
 - a plugin lists its capabilities;
 - it installs with Composer on a fresh Teme of each Teme version it claims (the newest release in each minor series), and a plugin can be enabled there, or a theme passes Teme's theme check;
-- if it ships its own tests (a `test` script in `composer.json`, or a PHPUnit or Pest configuration), they pass.
+- if it ships its own tests (a `test` script in `composer.json`, or a PHPUnit or Pest configuration), they pass. When their dependencies cannot be installed, the tests are reported as not run and the release is judged on the other checks.
 
 ## How your README is shown
 

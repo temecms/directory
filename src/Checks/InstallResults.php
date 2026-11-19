@@ -13,7 +13,7 @@ use Teme\Directory\Json;
 final class InstallResults
 {
     /**
-     * @param  list<array{name: string, version: string, teme: string, passed: bool, checks: list<array{passed: bool, words: string}>, log: string}>  $results
+     * @param  list<array{name: string, version: string, teme: string, passed: bool, checks: list<array{passed: bool, words: string, skipped?: bool}>, log: string}>  $results
      */
     public function __construct(private readonly array $results) {}
 
@@ -29,7 +29,7 @@ final class InstallResults
                     'teme' => $result['teme'],
                     'passed' => ($result['passed'] ?? false) === true,
                     'checks' => array_values(array_map(
-                        static fn (array $check): array => ['passed' => ($check['passed'] ?? false) === true, 'words' => (string) ($check['words'] ?? '')],
+                        static fn (array $check): array => ['passed' => ($check['passed'] ?? false) === true, 'words' => (string) ($check['words'] ?? '')] + (($check['skipped'] ?? false) === true ? ['skipped' => true] : []),
                         array_filter((array) ($result['checks'] ?? []), 'is_array'),
                     )),
                     'log' => is_string($result['log'] ?? null) ? $result['log'] : '',
@@ -43,7 +43,7 @@ final class InstallResults
     /**
      * The result for one release on one Teme version, or null when none came.
      *
-     * @return array{name: string, version: string, teme: string, passed: bool, checks: list<array{passed: bool, words: string}>, log: string}|null
+     * @return array{name: string, version: string, teme: string, passed: bool, checks: list<array{passed: bool, words: string, skipped?: bool}>, log: string}|null
      */
     public function for(string $name, string $version, string $teme): ?array
     {

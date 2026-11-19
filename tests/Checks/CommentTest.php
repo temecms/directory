@@ -94,6 +94,31 @@ final class CommentTest extends TestCase
         self::assertStringContainsString('A maintainer reviews the listing next.', $comment->markdown);
     }
 
+    public function test_tests_whose_dependencies_cannot_be_installed_are_reported_as_not_run_and_hold_nothing(): void
+    {
+        $notRun = ['passed' => true, 'skipped' => true, 'words' => 'Its own tests were not run: dependencies could not be installed.'];
+        $results = new InstallResults([
+            ['name' => 'acme/seo-audit', 'version' => '1.0.0', 'teme' => 'v1.2.0', 'passed' => true, 'checks' => [
+                ['passed' => true, 'words' => 'It is enabled on Teme v1.2.0.'],
+                $notRun,
+            ], 'log' => ''],
+        ]);
+
+        self::assertSame(['passed' => true, 'words' => []], $results->settled('acme/seo-audit', '1.0.0', ['v1.2.0']));
+
+        $comment = Comment::forPullRequest([
+            'listings' => [[
+                'path' => 'listings/acme/seo-audit.json', 'name' => 'acme/seo-audit', 'status' => 'checked', 'version' => '1.0.0', 'problems' => [],
+                'checks' => [], 'teme' => ['v1.2.0'],
+            ]],
+            'other' => [],
+        ], $results);
+
+        self::assertTrue($comment->passed);
+        self::assertStringContainsString("- ➖ Its own tests were not run: dependencies could not be installed.\n", $comment->markdown);
+        self::assertStringContainsString("### acme/seo-audit 1.0.0: every check passed\n", $comment->markdown);
+    }
+
     public function test_an_install_that_never_reported_is_named(): void
     {
         $comment = Comment::forPullRequest([

@@ -77,11 +77,11 @@ final class Comment
     }
 
     /**
-     * @param  list<array{passed: bool, words: string}>  $lines
+     * @param  list<array{passed: bool, words: string, skipped?: bool}>  $lines  A skipped check was not run and holds nothing.
      */
     private static function lines(array $lines): string
     {
-        return implode('', array_map(static fn (array $line): string => '- '.($line['passed'] ? '✅' : '❌').' '.$line['words']."\n", $lines));
+        return implode('', array_map(static fn (array $line): string => '- '.(($line['skipped'] ?? false) === true ? '➖' : ($line['passed'] ? '✅' : '❌')).' '.$line['words']."\n", $lines));
     }
 
     private static function tail(string $log): string
