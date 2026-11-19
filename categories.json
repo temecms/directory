@@ -1,0 +1,26 @@
+{
+    "plugin": {
+        "seo": "SEO",
+        "editing": "Editing",
+        "content": "Content",
+        "media": "Media",
+        "social": "Social",
+        "forms": "Forms",
+        "analytics": "Analytics",
+        "advertising": "Advertising",
+        "security": "Security",
+        "performance": "Performance",
+        "scheduling": "Scheduling",
+        "navigation": "Navigation",
+        "languages": "Languages",
+        "integrations": "Integrations",
+        "developer": "Developer tools"
+    },
+    "theme": {
+        "blog": "Blog",
+        "magazine": "Magazine and news",
+        "business": "Business",
+        "portfolio": "Portfolio",
+        "documentation": "Documentation"
+    }
+}
