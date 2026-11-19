@@ -1,8 +1,8 @@
 {
     "format": 1,
-    "sequence": 1,
-    "generated": "2026-11-19T20:19:30Z",
-    "expires": "2026-12-03T20:19:30Z",
+    "sequence": 2,
+    "generated": "2026-11-19T20:20:15Z",
+    "expires": "2026-12-03T20:20:15Z",
     "composer": {
         "path": "composer/packages.json",
         "sha256": "378fe1396773bcdbf46f5a46d5d9e78a3811a1a21054bf20b10b6e85c03c81b7"
