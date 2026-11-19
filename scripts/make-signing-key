@@ -1,0 +1,101 @@
+#!/usr/bin/env php
+<?php
+
+/*
+ * Makes the directory's Ed25519 signing key, once.
+ *
+ * It makes a key pair on this computer, stores the private key as the GitHub
+ * Actions secret DIRECTORY_SIGNING_KEY with the GitHub CLI, and prints only
+ * the public key, which Teme sites are given to check the index.
+ * The private key is never printed, written to a file or passed on a command
+ * line; it goes to `gh secret set` on its standard input.
+ *
+ * Usage: scripts/make-signing-key [--repo owner/name] [--replace]
+ *
+ * Needs PHP with sodium, and the GitHub CLI signed in with access to the
+ * repository's secrets. Without --replace it refuses when the secret exists,
+ * so a key sites already trust is never thrown away by accident.
+ */
+
+declare(strict_types=1);
+
+$repository = 'temecms/directory';
+$replace = false;
+for ($i = 1; $i < $argc; $i++) {
+    if ($argv[$i] === '--repo' && isset($argv[$i + 1])) {
+        $repository = $argv[++$i];
+    } elseif (str_starts_with($argv[$i], '--repo=')) {
+        $repository = substr($argv[$i], 7);
+    } elseif ($argv[$i] === '--replace') {
+        $replace = true;
+    } else {
+        fwrite(STDERR, "Usage: scripts/make-signing-key [--repo owner/name] [--replace]\n");
+        exit(2);
+    }
+}
+
+if (preg_match('#^[A-Za-z0-9-]+/[A-Za-z0-9._-]+$#', $repository) !== 1) {
+    fwrite(STDERR, "{$repository} is not owner/name.\n");
+    exit(2);
+}
+if (! function_exists('sodium_crypto_sign_seed_keypair')) {
+    fwrite(STDERR, "This PHP has no sodium extension.\n");
+    exit(1);
+}
+
+/**
+ * Runs a command with no shell and gives its exit code and output.
+ *
+ * @param  list<string>  $command
+ * @return array{int, string}
+ */
+function run(array $command, ?string $input = null): array
+{
+    $process = proc_open($command, [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+    if (! is_resource($process)) {
+        return [127, ''];
+    }
+    if ($input !== null) {
+        fwrite($pipes[0], $input);
+    }
+    fclose($pipes[0]);
+    $output = (string) stream_get_contents($pipes[1]).(string) stream_get_contents($pipes[2]);
+    fclose($pipes[1]);
+    fclose($pipes[2]);
+
+    return [proc_close($process), $output];
+}
+
+[$status] = run(['gh', 'auth', 'status']);
+if ($status !== 0) {
+    fwrite(STDERR, "The GitHub CLI is not signed in. Run gh auth login first.\n");
+    exit(1);
+}
+
+[$status, $secrets] = run(['gh', 'secret', 'list', '--repo', $repository]);
+if ($status !== 0) {
+    fwrite(STDERR, "Could not read the secrets of {$repository}. Check that gh can manage its secrets.\n");
+    exit(1);
+}
+if (! $replace && preg_match('/^DIRECTORY_SIGNING_KEY\s/m', $secrets) === 1) {
+    fwrite(STDERR, "{$repository} already has DIRECTORY_SIGNING_KEY. Sites trust its public key; run again with --replace only to rotate it.\n");
+    exit(1);
+}
+
+$seed = random_bytes(SODIUM_CRYPTO_SIGN_SEEDBYTES);
+$pair = sodium_crypto_sign_seed_keypair($seed);
+$public = base64_encode(sodium_crypto_sign_publickey($pair));
+$secret = base64_encode($seed);
+sodium_memzero($seed);
+sodium_memzero($pair);
+
+[$status] = run(['gh', 'secret', 'set', 'DIRECTORY_SIGNING_KEY', '--repo', $repository, '--app', 'actions'], $secret);
+sodium_memzero($secret);
+if ($status !== 0) {
+    fwrite(STDERR, "gh could not store the secret. Nothing was saved, and the new key is gone.\n");
+    exit(1);
+}
+
+fwrite(STDOUT, "Stored DIRECTORY_SIGNING_KEY in {$repository}.\n");
+fwrite(STDOUT, "The public key, for Teme's teme.directory.public_key and this repository's DIRECTORY_PUBLIC_KEY variable:\n\n");
+fwrite(STDOUT, $public."\n");
