@@ -1,0 +1,103 @@
+name: Comment on checks
+
+# Posts the result of Check listings on its pull request. It runs from the
+# default branch with permission to comment, and reads the checks' output only
+# as text. When the repository is set up for it, it also adds advisory notes
+# on the package's code for the maintainers.
+
+on:
+  workflow_run:
+    workflows: [Check listings]
+    types: [completed]
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  comment:
+    if: github.event.workflow_run.event == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: comment
+          path: comment
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+
+      - name: Find the pull request
+        id: pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          claimed=$(tr -dc '0-9' < comment/number)
+          number=$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${claimed}" --jq "select(.head.sha == \"${HEAD_SHA}\") | .number")
+          if [ "$number" != "$claimed" ]; then
+            echo "::error::The checks do not belong to pull request ${claimed}."
+            exit 1
+          fi
+          echo "number=$number" >> "$GITHUB_OUTPUT"
+
+      - name: Post or update the comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ steps.pr.outputs.number }}
+        run: |
+          head -c 60000 comment/comment.md > body.md
+          existing=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${NUMBER}/comments" --paginate \
+            --jq '[.[] | select(.user.login == "github-actions[bot]" and (.body | startswith("<!-- directory-checks -->")))][0].id // empty')
+          if [ -n "$existing" ]; then
+            gh api -X PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${existing}" -F body=@body.md > /dev/null
+          else
+            gh api -X POST "repos/${GITHUB_REPOSITORY}/issues/${NUMBER}/comments" -F body=@body.md > /dev/null
+          fi
+
+      - name: Set up PHP for the advisory notes
+        if: vars.AI_REVIEW_PROVIDER != ''
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: curl, sodium, zip
+          coverage: none
+
+      - name: Advisory notes
+        if: vars.AI_REVIEW_PROVIDER != ''
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ steps.pr.outputs.number }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          AI_REVIEW_KEY: ${{ secrets.AI_REVIEW_KEY }}
+          AI_REVIEW_PROVIDER: ${{ vars.AI_REVIEW_PROVIDER }}
+          AI_REVIEW_MODEL: ${{ vars.AI_REVIEW_MODEL }}
+        run: |
+          if [ -z "$AI_REVIEW_KEY" ]; then
+            echo "Advisory notes are not configured; skipped."
+            exit 0
+          fi
+          composer install --no-interaction --no-progress --no-dev
+          gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY" --name inspection --dir inspection
+          for archive in inspection/archives/*.zip; do
+            [ -e "$archive" ] || continue
+            what=$(basename "$archive" .zip)
+            php bin/directory advise --archive "$archive" --what "$what" --out advice.md
+            if [ -s advice.md ]; then
+              marker="<!-- directory-advice ${what} -->"
+              existing=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${NUMBER}/comments" --paginate \
+                --jq "[.[] | select(.user.login == \"github-actions[bot]\" and (.body | startswith(\"${marker}\")))][0].id // empty")
+              if [ -n "$existing" ]; then
+                gh api -X PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${existing}" -F body=@advice.md > /dev/null
+              else
+                gh api -X POST "repos/${GITHUB_REPOSITORY}/issues/${NUMBER}/comments" -F body=@advice.md > /dev/null
+              fi
+              rm advice.md
+            fi
+          done

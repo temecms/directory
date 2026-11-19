@@ -1,0 +1,270 @@
+name: Build index
+
+# Every 15 minutes, and whenever main changes, this reads every listed
+# repository's tags, takes in each new release once, installs it on a fresh
+# Teme, holds what needs a person, and publishes the signed index to GitHub
+# Pages when anything changed.
+#
+# What it remembers between runs lives on the directory-state branch; the
+# published site lives on the gh-pages branch. A package's own code runs only
+# in the install jobs, which hold no secrets and can write nothing.
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      force:
+        description: Sign and publish a new index even when nothing changed
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-index
+  cancel-in-progress: false
+
+env:
+  STATE_BRANCH: directory-state
+  SITE_BRANCH: gh-pages
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      installs: ${{ steps.poll.outputs.installs }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Check out what the last run remembered and published
+        run: |
+          for pair in "state:${STATE_BRANCH}" "site:${SITE_BRANCH}"; do
+            dir=${pair%%:*}; branch=${pair#*:}
+            if git ls-remote --exit-code --heads origin "$branch" > /dev/null; then
+              git fetch --quiet --depth 1 origin "$branch"
+              git worktree add --detach "$dir" FETCH_HEAD
+            else
+              mkdir -p "$dir"
+            fi
+          done
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: curl, sodium, zip
+          coverage: none
+
+      - name: Install the tools
+        run: composer install --no-interaction --no-progress --no-dev
+
+      - name: Take in new releases
+        id: poll
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          DIRECTORY_BASE_URL: ${{ vars.DIRECTORY_BASE_URL }}
+        run: |
+          before=$(mktemp)
+          (cd site && find assets -type f 2>/dev/null | sort) > "$before"
+          php bin/directory poll --state state --site site --work work
+          mkdir -p work/new-assets
+          (cd site && find assets -type f 2>/dev/null | sort) | comm -13 "$before" - | while read -r file; do
+            mkdir -p "work/new-assets/$(dirname "$file")"
+            cp "site/$file" "work/new-assets/$file"
+          done
+          rm -rf work/state && cp -r state work/state && rm -rf work/state/.git
+          installs=$(jq -c '[.[] as $p | $p.teme | to_entries[] | {name: $p.name, version: $p.version, kind: $p.kind, code: ($p.code // ""), teme: .value, archive: ($p.archive | split("/") | last), tests: (if .key == 0 then "1" else "0" end)}]' work/pending.json)
+          echo "installs=$installs" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: poll
+          path: work
+          include-hidden-files: true
+          retention-days: 3
+
+  install:
+    needs: poll
+    if: needs.poll.outputs.installs != '[]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        include: ${{ fromJSON(needs.poll.outputs.installs) }}
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: teme
+          POSTGRES_PASSWORD: teme
+          POSTGRES_DB: teme
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U teme"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_DATABASE: teme
+      DB_USERNAME: teme
+      DB_PASSWORD: teme
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: poll
+          path: work
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: curl, intl, pdo_pgsql, pgsql, sodium, zip, gd, bcmath, exif
+          coverage: none
+
+      - name: Install ${{ matrix.name }} ${{ matrix.version }} on Teme ${{ matrix.teme }}
+        env:
+          NAME: ${{ matrix.name }}
+          VERSION: ${{ matrix.version }}
+          KIND: ${{ matrix.kind }}
+          CODE: ${{ matrix.code }}
+          TEME: ${{ matrix.teme }}
+          ARCHIVE: ${{ matrix.archive }}
+          TESTS: ${{ matrix.tests }}
+        run: |
+          result="results/$(echo "$NAME-$VERSION-$TEME" | tr '/' '-').json"
+          scripts/install-check "work/archives/$ARCHIVE" "$NAME" "$VERSION" "$KIND" "$CODE" "$TEME" "$result" "$TESTS" || true
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: result-${{ strategy.job-index }}
+          path: results
+          if-no-files-found: ignore
+          retention-days: 3
+
+  publish:
+    needs: [poll, install]
+    if: always() && needs.poll.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check out the published site
+        run: |
+          if git ls-remote --exit-code --heads origin "$SITE_BRANCH" > /dev/null; then
+            git fetch --quiet --depth 1 origin "$SITE_BRANCH"
+            git worktree add --detach site FETCH_HEAD
+          else
+            git worktree add --orphan -b "$SITE_BRANCH" site
+          fi
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: poll
+          path: work
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: result-*
+          path: work/results
+          merge-multiple: true
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: curl, sodium, zip
+          coverage: none
+
+      - name: Install the tools
+        run: composer install --no-interaction --no-progress --no-dev
+
+      - name: Settle the waiting releases
+        id: settle
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p state work/results
+          cp -r work/state/. state/
+          cp -r work/new-assets/. site/ 2>/dev/null || true
+          gh issue list --repo "$GITHUB_REPOSITORY" --label held --state closed --limit 500 --json number,stateReason > work/closed.json
+          php bin/directory settle --state state --work work --closed work/closed.json
+
+      - name: Open an issue for each new hold
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
+          AI_REVIEW_KEY: ${{ secrets.AI_REVIEW_KEY }}
+          AI_REVIEW_PROVIDER: ${{ vars.AI_REVIEW_PROVIDER }}
+          AI_REVIEW_MODEL: ${{ vars.AI_REVIEW_MODEL }}
+        run: |
+          gh label create held --repo "$GITHUB_REPOSITORY" --color B60205 --description "A release waiting for a person" 2> /dev/null || true
+          jq -c '.[]' work/holds.json | while read -r hold; do
+            name=$(jq -r .name <<< "$hold"); version=$(jq -r .version <<< "$hold")
+            title=$(jq -r .title <<< "$hold"); body=$(jq -r .body_file <<< "$hold")
+            url=$(gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body-file "$body" --label held)
+            number=${url##*/}
+            php bin/directory record-issue --state state "$name" "$version" "$number"
+            php bin/directory advise --state state --name "$name" --version "$version" --out advice.md || true
+            if [ -s advice.md ]; then
+              gh issue comment "$number" --repo "$GITHUB_REPOSITORY" --body-file advice.md || true
+              rm advice.md
+            fi
+          done
+
+      - name: Build and sign the index
+        env:
+          DIRECTORY_SIGNING_KEY: ${{ secrets.DIRECTORY_SIGNING_KEY }}
+          DIRECTORY_PUBLIC_KEY: ${{ vars.DIRECTORY_PUBLIC_KEY }}
+          FORCE: ${{ inputs.force && '--force' || '' }}
+        run: php bin/directory build --state state --site site $FORCE
+
+      - name: Check the published index as a site would
+        if: vars.DIRECTORY_PUBLIC_KEY != ''
+        env:
+          DIRECTORY_PUBLIC_KEY: ${{ vars.DIRECTORY_PUBLIC_KEY }}
+        run: php bin/directory verify --site site
+
+      - name: Save what this run remembered and published
+        if: always() && steps.settle.outcome == 'success'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git -C site add -A
+          if ! git -C site diff --cached --quiet; then
+            git -C site commit --quiet -m "Publish the index"
+            git -C site push --quiet origin "HEAD:refs/heads/${SITE_BRANCH}"
+          fi
+
+          if git ls-remote --exit-code --heads origin "$STATE_BRANCH" > /dev/null; then
+            git fetch --quiet --depth 1 origin "$STATE_BRANCH"
+            git worktree add --detach saved FETCH_HEAD
+          else
+            git worktree add --orphan -b "$STATE_BRANCH" saved
+          fi
+          find saved -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp -r state/. saved/
+          git -C saved add -A
+          if ! git -C saved diff --cached --quiet; then
+            git -C saved commit --quiet -m "Remember the directory's state"
+            git -C saved push --quiet origin "HEAD:refs/heads/${STATE_BRANCH}"
+          fi

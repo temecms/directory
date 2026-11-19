@@ -398,7 +398,7 @@ final class Cli
             return 0;
         }
 
-        file_put_contents($this->option('out'), "<!-- directory-advice -->\n### Advisory notes on {$what}\n\nAutomated notes for the maintainers. They advise only and decide nothing.\n\n{$notes}\n");
+        file_put_contents($this->option('out'), "<!-- directory-advice {$what} -->\n### Advisory notes on {$what}\n\nAutomated notes for the maintainers. They advise only and decide nothing.\n\n{$notes}\n");
         $this->say('Advisory notes written.');
 
         return 0;
