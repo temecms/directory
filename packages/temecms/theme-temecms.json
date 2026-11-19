@@ -1,6 +1,6 @@
 {
     "name": "temecms/theme-temecms",
-    "listed": null,
+    "listed": "2026-11-19",
     "stars": 0,
     "issues": 4,
     "seen": [
@@ -118,14 +118,15 @@
                 "license": "MIT",
                 "php": null
             },
-            "status": "held",
+            "status": "listed",
             "hold": {
                 "reasons": [
                     "Teme v1.0.1's theme check does not pass.",
                     "Teme v1.1.1's theme check does not pass.",
                     "Teme v1.2.0's theme check does not pass."
                 ],
-                "issue": 2
+                "issue": 2,
+                "released": "2026-11-19"
             }
         }
     },
