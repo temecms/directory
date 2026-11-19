@@ -2,7 +2,7 @@
     "name": "temecms/theme-temecms",
     "listed": "2026-11-19",
     "stars": 0,
-    "issues": 4,
+    "issues": 5,
     "seen": [
         "v0.1.1",
         "v0.1.2",
@@ -132,8 +132,7 @@
     },
     "kind": "theme",
     "categories": [
-        "documentation",
-        "business"
+        "documentation"
     ],
     "picked": false,
     "repository": "https://github.com/temecms/theme-temecms",
