@@ -1,0 +1,78 @@
+{
+    "name": "temecms/theme-temecms",
+    "listed": null,
+    "stars": 0,
+    "issues": 5,
+    "seen": [
+        "v0.1.1",
+        "v0.1.2"
+    ],
+    "releases": {
+        "0.1.2": {
+            "version": "0.1.2",
+            "tag": "v0.1.2",
+            "reference": "4ce58a9f4fa7cd0dcaf2e9cd1987d036ef58aa8c",
+            "date": "2026-11-18T13:10:37Z",
+            "dist": {
+                "url": "https://api.github.com/repos/temecms/theme-temecms/zipball/v0.1.2",
+                "sha256": "c8d43a57ed84b55112a6cf7362430728b79bdf3eda6e36432a052f0a9993e852",
+                "sha1": "ff70c41c48853548b925da59094b066a815b88c0"
+            },
+            "works_with": [
+                "1.0",
+                "1.1"
+            ],
+            "teme_range": "^1.0",
+            "teme_tags": [
+                "v1.0.1",
+                "v1.1.1"
+            ],
+            "code": "temecms",
+            "capabilities": [],
+            "hosts": [],
+            "composer": {
+                "name": "temecms/theme-temecms",
+                "description": "The theme of temecms.com, Teme's own public site.",
+                "type": "teme-theme",
+                "license": "MIT"
+            },
+            "page": {
+                "label": "TemeCMS",
+                "summary": "The theme of temecms.com, Teme's own public site: a product home page, documentation, plugin and theme directories, and a blog, in neutral grounds with the Ember accent.",
+                "author": {
+                    "name": "TemeCMS"
+                },
+                "icon": null,
+                "screenshots": [],
+                "capabilities": [],
+                "readme": "The theme of [temecms.com](https://temecms.com), the TemeCMS project's own website: a product home page, documentation, plugin and theme directories, a migration page, hosting, developers, FAQ, roadmap and a blog.\n\n- Package: `temecms/theme-temecms`\n- Theme code: `temecms`\n- Licence: MIT\n\n![The home page at 1280 wide](https://temecms.github.io/directory/assets/temecms/theme-temecms/0.1.2/dd2aeb49df6ea216.png)\n\n## Requirements\n\n- TemeCMS `^1.0`\n\nWorking on the theme itself (assets, content, browser checks) needs more: see [CONTRIBUTING.md](https://github.com/temecms/theme-temecms/blob/v0.1.2/CONTRIBUTING.md).\n\n## Install\n\nFrom the admin: open the theme installer, choose to install from a Git address, and give it\n\n```\nhttps://github.com/temecms/theme-temecms\n```\n\nOr with Composer, in the Teme install's folder (once the package is on Packagist):\n\n```bash\ncomposer require temecms/theme-temecms\n```\n\nThen check it and link its public files:\n\n```bash\nphp artisan teme:theme:check temecms\nphp artisan teme:themes:link\n```\n\nand activate it under Site › Themes.\n\nTo work on a local copy instead, add the theme's folder, as an absolute path, to `TEME_THEME_PATHS` in the Teme install's `.env`. The folder must be named `temecms`, the theme's code.\n\n## What it draws\n\n| Template | Draws |\n|---|---|\n| `single-page-home` | The home page: opening, four stops, closing |\n| `single-page-landing`, `-faq`, `-roadmap`, `single-page` | Pages made of an opening and sections; questions; three columns; plain pages |\n| `archive-doc`, `single-doc` | The documentation home, and a guide with its tree, proof mark, \"On this page\", previous and next |\n| `archive-plugin`, `single-plugin` | The plugin directory (search, categories, rows) and a plugin's page |\n| `archive-theme`, `single-theme` | The theme directory and a theme's page |\n| `latest`, `single`, `archive`, `search` | The blog, a post, categories and tags, search |\n| `notfound`, `error`, `index` | Not found, errors, the fallback |\n\nPage templates an editor can pick: Default, Home, Landing (an opening, then sections), Questions and answers, Roadmap (three columns).\n\n### How a page's content becomes sections\n\nLanding, home, FAQ and roadmap pages split their content at horizontal rules: the first part is the opening, every later part a section. Inside a section:\n\n- a paragraph that is only bold text is the small label above the section's heading;\n- an `h2` is the section's heading; `h3` headings followed by paragraphs become cards (two or more make a grid);\n- a paragraph that is only a bold link is drawn as a quiet button;\n- a numbered list is drawn as steps, and a picture as a picture with its caption.\n\n## Menus\n\n| Slot | Where |\n|---|---|\n| `primary` | The header |\n| `footer-teme`, `footer-build`, `footer-project` | The footer's three columns |\n| `docs-editors`, `docs-operators`, `docs-developers` | The documentation's three guides |\n\n## Regions\n\n| Region | Where | Cards |\n|---|---|---|\n| `home-latest` | Home page: from the blog | featured posts (one) |\n| `after-content` | After the content of a page or post | callout, button, site code, featured posts |\n| `blog-intro` | Blog: opening text | callout, button, image |\n| `docs-intro` | Documentation: opening text | callout, button, image |\n| `plugins-intro` | Plugins: opening text | callout, button, image |\n| `plugins-how` | Plugins: how they work | callout, button, image |\n| `themes-intro` | Themes: opening text | callout, button, image |\n| `themes-build` | Themes: build a theme | callout, button, image |\n\nFill them under Content › Regions.\n\n## Settings\n\nUnder Site › Themes:\n\n| Setting | Default |\n|---|---|\n| Maker line (footer) | Made by Krafty Sprouts Media. |\n| The follow link's words | Follow the build |\n| The follow link's address (https only) | https://github.com/temecms |\n| Status line (foot of every page and the home page; empty shows none) | empty |\n| Licence line (empty shows none) | MIT licence |\n| Show the latest blog posts on the home page | off |\n| Documentation version label | 0.7 |\n\n## Load the site on a live install\n\nThe theme carries the whole temecms.com site in its `seed` folder: pages, posts, guides, plugin and theme entries, product pictures, menus, regions and settings. One command puts it into a Teme install. It makes everything through Teme's own Operations, as an administrator would from the admin, and needs nothing that isn't in Teme's production image.\n\nBefore you start:\n\n- the theme is installed (see [Install](#install));\n- an administrator exists. If none does yet, make one with `php artisan teme:user:create --role=administrator --name=\"Your Name\" --email=you@example.com` and open the link it prints. You need that administrator's user ID: the first user on a new site is `1`.\n\nThen, on Teme's Docker image (as with the recipe on Dokploy):\n\n1. Open a terminal in the **web** container (in Dokploy: the `web` service's Docker terminal; or `docker compose exec web sh` next to the compose file). The image's `php` runs as the site's own user, so the pictures the seed uploads stay writable by the site.\n2. Go to Teme's folder:\n\n   ```bash\n   cd /var/www/html\n   ```\n\n3. Run the seed. A theme installed from the admin lives in the extensions folder, under `current/vendor/temecms/theme-temecms` (installed another way, use the theme's own folder). Set `SEED_ADMIN_ID` to your administrator's ID:\n\n   ```bash\n   SEED_ADMIN_ID=1 php /var/teme/extensions/current/vendor/temecms/theme-temecms/seed/seed.php types fields media theme content regions menus settings addresses activate\n   ```\n\nThe steps run in this order, whatever order you name them in:\n\n| Step | Does |\n|---|---|\n| `types` | Adds the content types Guide (`/docs/{slug}/`), Plugin (`/plugins/{slug}/`) and Theme |\n| `fields` | Adds their fields, and the page fields kicker and emphasis |\n| `media` | Uploads the product pictures in `seed/media` with their alt text |\n| `theme` | Makes `temecms` the site's theme (before `content`: a page picks its template from the active theme) |\n| `content` | Makes and publishes every page, post, guide, plugin and theme entry, with links between them stored as IDs |\n| `regions` | Fills the theme's regions |\n| `menus` | Makes the menus and puts them in the theme's slots |\n| `settings` | Sets the site's title and tagline |\n| `addresses` | Moves the theme directory to `/theme-directory/{slug}/` (core serves theme assets from `/themes/`) |\n| `activate` | Makes the home page the front page and the blog page the posts page |\n\n`theme`, `settings`, `addresses` and `activate` change the site's theme, title, addresses and front page, so run them only on a site meant for this content. Leave a step out to skip it.\n\nIt is safe to run again. What the seed made before is found and reused, never duplicated, and a second run changes nothing: it ends with \"Nothing to change\". It remembers what it made in `storage/app/theme-temecms-seed.json` (set `SEED_STATE` to keep that file elsewhere); without that file it finds its pictures and items by name. Published items are left as they are, even if you have edited them since; to write the seed's version over a type's items again, name the type in `SEED_FORCE`, as in `SEED_FORCE=page,doc` (`region` for the regions).\n\nIf Teme refuses a step, the seed prints the step and the reason, such as `Refused: Publishing Hosting. …`, stops, and exits with a non-zero status. Fix the cause and run the same command again: it carries on where it stopped.\n\n## Working on the theme\n\nBuilding the assets, changing the seed's content, the tests and the browser checks are in [CONTRIBUTING.md](https://github.com/temecms/theme-temecms/blob/v0.1.2/CONTRIBUTING.md). What changed in each version is in [CHANGELOG.md](https://github.com/temecms/theme-temecms/blob/v0.1.2/CHANGELOG.md).\n\n## Licence\n\nMIT, copyright Krafty Sprouts Media, LLC. See [LICENSE](https://github.com/temecms/theme-temecms/blob/v0.1.2/LICENSE). The IBM Plex fonts in `public/fonts` are under the SIL Open Font License; see `public/fonts/OFL-ibm-plex.txt`.\n",
+                "changelog": "## 0.1.2\n\n- The seed runs on a live Teme install made from the production image. It no longer needs Teme's testing kit or PHPUnit: it acts as the administrator `SEED_ADMIN_ID` itself, and a refused step prints the step and the reason and exits with a non-zero status.\n- The seed finds a theme installed from the admin, under the extensions folder.\n- The seed's state file is `storage/app/theme-temecms-seed.json` (or `SEED_STATE`), no longer inside the theme's folder, which is read-only on a live site.\n- A second run of the seed changes nothing. Regions, menus, menu places, settings, the theme, the theme directory's address and the front page are written only when they differ, and pictures and items an earlier run made are found again without the state file.\n- The steps run in one fixed order, the theme before the content, whatever order they are named in. An unknown step name stops the seed before it starts.\n- The status line is empty by default, and the footer and the home page leave it out when it is empty.\n- The README says how to load the site on a live install; notes for maintainers moved to `CONTRIBUTING.md`.\n\n## 0.1.1\n\n- Installs on Teme 1.x: the theme requires Teme `^1.0`.\n\n## 0.1.0\n\n- The theme of temecms.com: the product home page, documentation, plugin and theme directories, a migration page, hosting, developers, FAQ, roadmap and a blog, with the seed that builds the site.\n",
+                "links": {
+                    "source": "https://github.com/temecms/theme-temecms",
+                    "issues": null,
+                    "docs": null,
+                    "support": null,
+                    "security": null
+                },
+                "license": "MIT",
+                "php": null
+            },
+            "status": "held",
+            "hold": {
+                "reasons": [
+                    "Teme v1.0.1's theme check does not pass.",
+                    "Teme v1.1.1's theme check does not pass."
+                ],
+                "issue": 1
+            }
+        }
+    },
+    "kind": "theme",
+    "categories": [
+        "documentation",
+        "business"
+    ],
+    "picked": false,
+    "repository": "https://github.com/temecms/theme-temecms",
+    "owner": "temecms"
+}
