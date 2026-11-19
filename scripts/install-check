@@ -90,6 +90,8 @@ export APP_ENV=local APP_DEBUG=false DB_CONNECTION=pgsql
 composer install --no-interaction --no-progress --prefer-dist >>"$log" 2>&1 \
     || unavailable "Teme $teme's own dependencies could not be installed."
 cp .env.example .env
+# A clone at a tag doesn't know its own version (the image sets it): say which Teme this is, so a package's "requires" is checked against the real version.
+echo "TEME_VERSION=${teme#v}" >> .env
 php artisan key:generate --force >>"$log" 2>&1 || unavailable "Teme $teme could not make its key."
 php artisan migrate:fresh --force >>"$log" 2>&1 || unavailable "Teme $teme could not set up its database."
 
