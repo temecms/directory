@@ -1,0 +1,153 @@
+#!/usr/bin/env bash
+#
+# Installs one release of a listed package on a fresh Teme and writes how it
+# went as JSON, for the directory's checks.
+#
+# Usage:
+#   scripts/install-check ARCHIVE NAME VERSION KIND CODE TEME_TAG RESULT_FILE [RUN_TESTS]
+#
+#   ARCHIVE     the release's zip file, as GitHub serves it
+#   NAME        the package's Composer name, such as acme/seo-audit
+#   VERSION     the release's version, such as 1.2.0
+#   KIND        plugin or theme
+#   CODE        a theme's code from teme-theme.json (unused for a plugin)
+#   TEME_TAG    the Teme release to install on, such as v1.2.0
+#   RESULT_FILE where to write the result
+#   RUN_TESTS   1 to also run the package's own tests
+#
+# Needs git, composer, php, unzip and jq, and a PostgreSQL database named by
+# DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME and DB_PASSWORD, which it empties.
+#
+# Exits 0 when it wrote a result, passed or not, and 2 when Teme itself could
+# not be set up, so the release is checked again on the next run.
+
+set -uo pipefail
+
+if [[ $# -lt 7 ]]; then
+    sed -n '3,22p' "$0"
+    exit 2
+fi
+
+archive=$(realpath "$1")
+name=$2
+version=$3
+kind=$4
+code=$5
+teme=$6
+result=$(realpath -m "$7")
+run_tests=${8:-0}
+teme_repository=${TEME_REPOSITORY:-temecms/teme}
+
+work=$(mktemp -d)
+log="$work/log.txt"
+touch "$log"
+checks='[]'
+failed_log=''
+
+add() {
+    checks=$(jq -c --argjson passed "$1" --arg words "$2" '. + [{passed: $passed, words: $words}]' <<<"$checks")
+}
+
+fail() {
+    add false "$1"
+    failed_log+=$(tail -n 40 "$2")$'\n'
+}
+
+finish() {
+    mkdir -p "$(dirname "$result")"
+    jq -n \
+        --arg name "$name" --arg version "$version" --arg teme "$teme" \
+        --argjson checks "$checks" --arg log "$failed_log" \
+        '{name: $name, version: $version, teme: $teme, passed: ([$checks[].passed] | all), checks: $checks, log: $log}' >"$result"
+    exit 0
+}
+
+unavailable() {
+    echo "::warning::$1"
+    tail -n 60 "$log"
+    exit 2
+}
+
+run() {
+    local step_log=$1
+    shift
+    "$@" >"$step_log" 2>&1
+    local status=$?
+    cat "$step_log" >>"$log"
+    return $status
+}
+
+# A fresh Teme.
+git clone --quiet --depth 1 --branch "$teme" "https://github.com/${teme_repository}.git" "$work/teme" >>"$log" 2>&1 \
+    || unavailable "Teme $teme could not be cloned."
+cd "$work/teme" || exit 2
+export COMPOSER_ROOT_VERSION="${teme#v}"
+export APP_ENV=local APP_DEBUG=false DB_CONNECTION=pgsql
+composer install --no-interaction --no-progress --prefer-dist >>"$log" 2>&1 \
+    || unavailable "Teme $teme's own dependencies could not be installed."
+cp .env.example .env
+php artisan key:generate --force >>"$log" 2>&1 || unavailable "Teme $teme could not make its key."
+php artisan migrate:fresh --force >>"$log" 2>&1 || unavailable "Teme $teme could not set up its database."
+
+# The release.
+mkdir -p "$work/unzipped"
+if ! unzip -q "$archive" -d "$work/unzipped" >>"$log" 2>&1; then
+    fail "The release archive could not be unpacked." "$log"
+    finish
+fi
+package=$(find "$work/unzipped" -mindepth 1 -maxdepth 1 -type d | head -n 1)
+repository=$(jq -cn --arg url "$package" --arg name "$name" --arg version "$version" \
+    '{type: "path", url: $url, options: {symlink: false, versions: {($name): $version}}}')
+composer config repositories.candidate "$repository" >>"$log" 2>&1
+
+step="$work/step.txt"
+if run "$step" composer require "$name:$version" --no-interaction --no-progress; then
+    add true "It installs on Teme $teme with Composer."
+else
+    fail "It does not install on Teme $teme: Composer could not add it." "$step"
+    finish
+fi
+
+if run "$step" php artisan migrate --force; then
+    :
+else
+    fail "Teme $teme's database changes do not run with it installed." "$step"
+fi
+
+if [[ $kind == plugin ]]; then
+    if run "$step" php artisan teme:plugins:enable "$name" --agree; then
+        add true "It is enabled on Teme $teme."
+    else
+        fail "It cannot be enabled on Teme $teme." "$step"
+    fi
+else
+    run "$step" php artisan teme:themes:cache || true
+    if run "$step" php artisan teme:theme:check "$code"; then
+        add true "Teme $teme's theme check passes."
+    else
+        fail "Teme $teme's theme check does not pass." "$step"
+    fi
+fi
+
+# The package's own tests, once per release.
+if [[ $run_tests == 1 ]]; then
+    cd "$package" || finish
+    has_script=$(jq -r '.scripts.test // empty' composer.json 2>/dev/null)
+    if [[ -n $has_script || -f phpunit.xml || -f phpunit.xml.dist || -f pest.xml ]]; then
+        if ! run "$step" composer install --no-interaction --no-progress --prefer-dist; then
+            fail "Its own tests could not be set up: Composer could not install its dependencies." "$step"
+        elif [[ -n $has_script ]] && run "$step" composer test; then
+            add true "Its own tests pass."
+        elif [[ -z $has_script && -x vendor/bin/pest ]] && run "$step" vendor/bin/pest; then
+            add true "Its own tests pass."
+        elif [[ -z $has_script && ! -x vendor/bin/pest && -x vendor/bin/phpunit ]] && run "$step" vendor/bin/phpunit; then
+            add true "Its own tests pass."
+        else
+            fail "Its own tests do not pass." "$step"
+        fi
+    else
+        add true "It ships no tests of its own."
+    fi
+fi
+
+finish
