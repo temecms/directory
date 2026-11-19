@@ -1,11 +1,38 @@
 {
     "format": 1,
-    "sequence": 2,
-    "generated": "2026-11-19T20:20:15Z",
-    "expires": "2026-12-03T20:20:15Z",
+    "sequence": 3,
+    "generated": "2026-11-19T20:23:58Z",
+    "expires": "2026-12-03T20:23:58Z",
     "composer": {
         "path": "composer/packages.json",
-        "sha256": "378fe1396773bcdbf46f5a46d5d9e78a3811a1a21054bf20b10b6e85c03c81b7"
+        "sha256": "5aadb75ededc6f9c84b211e9dc03f1ce1ba1e434d14c23074df4a7cbf511d0c3"
     },
-    "packages": []
+    "packages": [
+        {
+            "name": "temecms/theme-temecms",
+            "kind": "theme",
+            "categories": [
+                "documentation",
+                "business"
+            ],
+            "picked": false,
+            "label": "TemeCMS",
+            "summary": "The theme of temecms.com, Teme's own public site: a product home page, documentation, plugin and theme directories, and a blog, in neutral grounds with the Ember accent.",
+            "author": {
+                "name": "TemeCMS",
+                "github": "temecms"
+            },
+            "latest": "0.2.0",
+            "updated": "2026-11-19",
+            "listed": "2026-11-19",
+            "works_with": [
+                "1.0",
+                "1.1",
+                "1.2"
+            ],
+            "icon": null,
+            "detail": "packages/temecms/theme-temecms.json",
+            "detail_sha256": "45fb29a8af670c2aa737060b1fcfbd6f632d85c3a176e27028030301f1577a10"
+        }
+    ]
 }

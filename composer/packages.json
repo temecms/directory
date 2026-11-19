@@ -1,3 +1,26 @@
 {
-    "packages": {}
+    "packages": {
+        "temecms/theme-temecms": {
+            "0.2.0": {
+                "name": "temecms/theme-temecms",
+                "description": "The theme of temecms.com, Teme's own public site.",
+                "type": "teme-theme",
+                "license": "MIT",
+                "version": "0.2.0",
+                "version_normalized": "0.2.0.0",
+                "dist": {
+                    "type": "zip",
+                    "url": "https://api.github.com/repos/temecms/theme-temecms/zipball/v0.2.0",
+                    "reference": "e12a23999677a3947c72c4c06d97894f8cb484d1",
+                    "shasum": "a10c1e5ded0201b7c5c18edaf9f20448c563655a"
+                },
+                "source": {
+                    "type": "git",
+                    "url": "https://github.com/temecms/theme-temecms.git",
+                    "reference": "e12a23999677a3947c72c4c06d97894f8cb484d1"
+                },
+                "time": "2026-11-19T19:51:12Z"
+            }
+        }
+    }
 }
