@@ -1,6 +1,6 @@
 {
     "repository": "https://github.com/temecms/theme-temecms",
     "kind": "theme",
-    "categories": ["documentation", "business"],
+    "categories": ["documentation"],
     "picked": false
 }
