@@ -2,8 +2,7 @@
     "name": "temecms/theme-temecms",
     "kind": "theme",
     "categories": [
-        "documentation",
-        "business"
+        "documentation"
     ],
     "picked": false,
     "repository": "https://github.com/temecms/theme-temecms",
@@ -36,7 +35,7 @@
     "license": "MIT",
     "php": null,
     "stars": 0,
-    "issues": 4,
+    "issues": 5,
     "releases": [
         {
             "version": "0.2.0",

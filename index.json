@@ -1,8 +1,8 @@
 {
     "format": 1,
-    "sequence": 4,
-    "generated": "2026-11-19T20:24:58Z",
-    "expires": "2026-12-03T20:24:58Z",
+    "sequence": 5,
+    "generated": "2026-11-19T20:27:50Z",
+    "expires": "2026-12-03T20:27:50Z",
     "composer": {
         "path": "composer/packages.json",
         "sha256": "5aadb75ededc6f9c84b211e9dc03f1ce1ba1e434d14c23074df4a7cbf511d0c3"
@@ -12,8 +12,7 @@
             "name": "temecms/theme-temecms",
             "kind": "theme",
             "categories": [
-                "documentation",
-                "business"
+                "documentation"
             ],
             "picked": false,
             "label": "TemeCMS",
@@ -32,7 +31,7 @@
             ],
             "icon": null,
             "detail": "packages/temecms/theme-temecms.json",
-            "detail_sha256": "45fb29a8af670c2aa737060b1fcfbd6f632d85c3a176e27028030301f1577a10"
+            "detail_sha256": "64f9cdfe6746e791e790362d011626a41a18301b440bad848f235498c6878f7b"
         }
     ]
 }
