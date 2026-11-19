@@ -1,5 +1,9 @@
 {
     "format": 1,
-    "sequence": 0,
-    "published": null
+    "sequence": 1,
+    "published": {
+        "content": "0d1fab31cb3b6a658ee6f62982624d9f14edd30f9288f293bf706bfbaa570a9e",
+        "figures": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "at": "2026-11-19T20:19:30Z"
+    }
 }
