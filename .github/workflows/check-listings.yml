@@ -47,6 +47,9 @@ jobs:
         working-directory: tool
         run: composer install --no-interaction --no-progress --no-dev
 
+      - name: Use Teme's current manifest format
+        run: if [ -f tool/scripts/fetch-manifest-schemas ]; then bash tool/scripts/fetch-manifest-schemas tool/schema; fi
+
       - name: Inspect the changed listings
         id: inspect
         env:
