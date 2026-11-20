@@ -1,0 +1,6 @@
+{
+    "repository": "https://github.com/temecms/teme-seo",
+    "kind": "plugin",
+    "categories": ["seo"],
+    "picked": true
+}
