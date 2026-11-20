@@ -32,8 +32,8 @@ At the root of the release:
 
 | File | What it holds |
 |---|---|
-| `composer.json` | `name` (the same as the listing file's name), `type` (`teme-plugin` or `teme-theme`), `license`, `description`, `authors`, and the Teme versions it works with in `require` (`"teme/teme": "^1.2"`). `support.issues`, `support.docs` and `support.security` become links on its page. |
-| `teme-plugin.json` or `teme-theme.json` | Teme's manifest, which Teme itself reads. Its `label` (or a theme's `name`) and `description` are the name and the one-line summary on the directory's pages. A plugin lists the `capabilities` it asks for, as `[]` when it asks for none. |
+| `composer.json` | `name` (the same as the listing file's name), `type` (`teme-plugin` or `teme-theme`), `license`, `description` and `authors`. A plugin that codes against Teme's contracts requires `teme/contracts` (`"teme/contracts": "^1.3"`); never require `teme/teme` itself, which a site's own Teme provides. `support.issues`, `support.docs` and `support.security` become links on its page. |
+| `teme-plugin.json` or `teme-theme.json` | Teme's manifest, which Teme itself reads. Its `label` (or a theme's `name`) and `description` are the name and the one-line summary on the directory's pages, and `requires.teme` (`"^1.3.1"`) is the Teme versions it works with. A plugin lists the `capabilities` it asks for, as `[]` when it asks for none. |
 | `README.md` | What the package does, shown as its page's Overview. |
 | `CHANGELOG.md` | Optional, and recommended: one heading per version, with its date. Shown as the Changelog. |
 
