@@ -121,7 +121,9 @@ else
 fi
 
 if [[ $kind == plugin ]]; then
-    if run "$step" php artisan teme:plugins:enable "$name" --agree; then
+    # Scheduled work runs as an administrator, so the check site needs one.
+    run "$step" php artisan teme:user:create --name="Directory check" --email=check@example.test --role=administrator --no-interaction || true
+    if run "$step" php artisan teme:plugins:enable "$name" --agree --as=check@example.test; then
         add true "It is enabled on Teme $teme."
     else
         fail "It cannot be enabled on Teme $teme." "$step"

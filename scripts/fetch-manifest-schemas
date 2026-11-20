@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Copies Teme's manifest formats from the newest release of temecms/contracts into the given folder,
+# so the checks read the format Teme ships today rather than the copy committed here.
+set -euo pipefail
+dir="${1:-schema}"
+tag=$(git ls-remote --tags --refs --sort=-v:refname https://github.com/temecms/contracts.git 'v*' | head -n 1 | sed 's#.*refs/tags/##')
+[[ -n $tag ]] || { echo "No release of temecms/contracts found; keeping the committed copies." >&2; exit 0; }
+for kind in plugin theme; do
+    curl -fsSL --retry 3 "https://raw.githubusercontent.com/temecms/contracts/$tag/schema/teme-$kind.schema.json" -o "$dir/teme-$kind.schema.json.new"
+    mv "$dir/teme-$kind.schema.json.new" "$dir/teme-$kind.schema.json"
+done
+echo "Manifest formats from temecms/contracts $tag."

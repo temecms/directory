@@ -64,6 +64,9 @@ jobs:
       - name: Install the tools
         run: composer install --no-interaction --no-progress --no-dev
 
+      - name: Use Teme's current manifest format
+        run: bash scripts/fetch-manifest-schemas schema
+
       - name: Take in new releases
         id: poll
         env:

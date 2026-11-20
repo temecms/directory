@@ -32,7 +32,8 @@ final class ListingValidatorTest extends TestCase
 
         foreach (glob($root.'/listings/*/*.json') ?: [] as $file) {
             $path = substr($file, strlen($root) + 1);
-            self::assertSame([], $validator->validate($path, (string) file_get_contents($file), null, false), $path);
+            // A listing here was merged by a maintainer, so a pick it carries is theirs; the pull request check enforces who may set it.
+            self::assertSame([], $validator->validate($path, (string) file_get_contents($file), null, true), $path);
         }
     }
 
