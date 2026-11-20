@@ -95,14 +95,11 @@ From [categories.json](categories.json); a listing names one to three of its kin
 
 | Plugins | | Themes |
 |---|---|---|
-| `seo` SEO | `security` Security | `blog` Blog |
-| `editing` Editing | `performance` Performance | `magazine` Magazine and news |
-| `content` Content | `scheduling` Scheduling | `business` Business |
-| `media` Media | `navigation` Navigation | `portfolio` Portfolio |
-| `social` Social | `languages` Languages | `documentation` Documentation |
-| `forms` Forms | `integrations` Integrations | |
-| `analytics` Analytics | `developer` Developer tools | |
-| `advertising` Advertising | | |
+| `seo` SEO and sharing | `analytics` Analytics and ads | `blog` Blog |
+| `content` Content and editing | `security` Security and speed | `magazine` Magazine and news |
+| `media` Media | `languages` Languages | `business` Business |
+| `forms` Forms | `integrations` Integrations and developer tools | `portfolio` Portfolio |
+| | | `documentation` Documentation |
 
 ## For sites and tools
 
