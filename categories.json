@@ -1,20 +1,13 @@
 {
     "plugin": {
-        "seo": "SEO",
-        "editing": "Editing",
-        "content": "Content",
+        "seo": "SEO and sharing",
+        "content": "Content and editing",
         "media": "Media",
-        "social": "Social",
         "forms": "Forms",
-        "analytics": "Analytics",
-        "advertising": "Advertising",
-        "security": "Security",
-        "performance": "Performance",
-        "scheduling": "Scheduling",
-        "navigation": "Navigation",
+        "analytics": "Analytics and ads",
+        "security": "Security and speed",
         "languages": "Languages",
-        "integrations": "Integrations",
-        "developer": "Developer tools"
+        "integrations": "Integrations and developer tools"
     },
     "theme": {
         "blog": "Blog",
