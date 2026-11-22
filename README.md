@@ -26,6 +26,29 @@ Listing is free. Your package stays in your own GitHub repository; this reposito
 
 To take a package out of the directory, open a pull request that deletes its listing file.
 
+### Opening the pull request: a branch here, or the Submit form
+
+How the pull request is opened depends on whether you can push to this repository. Check first:
+
+```sh
+gh api repos/temecms/directory --jq .permissions.push
+```
+
+- **`true`** (the directory's maintainers, and an agent working under a maintainer's login): push a branch named `list/<vendor>-<name>` to this repository and open the pull request from it. **Don't fork.** A fork is a public copy of the whole directory under your own account, it stays after the pull request is closed, and only its owner can delete it.
+
+  ```sh
+  git clone https://github.com/temecms/directory && cd directory
+  git switch -c list/acme-seo-audit
+  # add listings/acme/seo-audit.json
+  git add listings && git commit -m "List acme/seo-audit"
+  git push origin list/acme-seo-audit
+  gh pr create --repo temecms/directory --head list/acme-seo-audit --title "List acme/seo-audit"
+  ```
+
+- **`false`, or no GitHub account:** use the Submit form on temecms.com. It opens the pull request from a branch in this repository for you, with no fork. Forking and opening the pull request from your fork also works, as on any GitHub repository.
+
+If you are an agent listing a package for someone: a listing is public the moment the pull request opens, and stays visible after it is closed. Before opening it, tell the person which package, which repository it points at and which GitHub account the pull request will come from, and wait for their yes. Never run `gh repo fork` on this repository unless they asked for a fork.
+
 ## What your package needs
 
 At the root of the release:
