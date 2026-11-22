@@ -1,13 +1,36 @@
 {
     "format": 1,
-    "sequence": 7,
-    "generated": "2026-11-20T05:55:37Z",
-    "expires": "2026-12-04T05:55:37Z",
+    "sequence": 8,
+    "generated": "2026-11-22T10:23:41Z",
+    "expires": "2026-12-06T10:23:41Z",
     "composer": {
         "path": "composer/packages.json",
-        "sha256": "4e8ea716b947e8a9ee28850552d1ec0652f4e872f2841e94469152cfb66d6492"
+        "sha256": "abb9fd1139be8fbf3881406d7255e7bc13ab2e7a3218ab113cad7f6f29ab904e"
     },
     "packages": [
+        {
+            "name": "krafty-sprouts/sharely",
+            "kind": "plugin",
+            "categories": [
+                "seo"
+            ],
+            "picked": false,
+            "label": "Sharely",
+            "summary": "Share buttons in your articles and a floating share bar, follow buttons, highlight-to-share, Pinterest pins and a share report. Counts share clicks on your own site without cookies or addresses. Only if you turn them on, asks Facebook, Pinterest, Reddit or Hacker News for an article's share count, and Bitly for short links.",
+            "author": {
+                "name": "Krafty Sprouts Media, LLC",
+                "github": "Krafty-Sprouts-Media-LLC"
+            },
+            "latest": "1.1.0",
+            "updated": "2026-11-22",
+            "listed": "2026-11-22",
+            "works_with": [
+                "1.3"
+            ],
+            "icon": "https://temecms.github.io/directory/assets/krafty-sprouts/sharely/1.1.0/afb7cb1d7bfa2b74.png",
+            "detail": "packages/krafty-sprouts/sharely.json",
+            "detail_sha256": "f57a32f37a75f49c1c8c265b43a71f31f03e5855a78b85ab63910376c899061d"
+        },
         {
             "name": "teme/seo",
             "kind": "plugin",
@@ -21,15 +44,15 @@
                 "name": "The Teme maintainers",
                 "github": "temecms"
             },
-            "latest": "1.0.1",
-            "updated": "2026-11-20",
+            "latest": "1.0.2",
+            "updated": "2026-11-22",
             "listed": "2026-11-20",
             "works_with": [
                 "1.3"
             ],
             "icon": null,
             "detail": "packages/teme/seo.json",
-            "detail_sha256": "35dda91bf40586ac6617f9cb0f6d2514432bc22f1f7d6d0c984f2d7d48576c93"
+            "detail_sha256": "1cdaf39dc2808db57afe4716ff17fa47a42a1eec57b58b37ca95fd6c18349309"
         },
         {
             "name": "temecms/theme-temecms",

@@ -1,0 +1,93 @@
+{
+    "name": "krafty-sprouts/sharely",
+    "kind": "plugin",
+    "categories": [
+        "seo"
+    ],
+    "picked": false,
+    "repository": "https://github.com/Krafty-Sprouts-Media-LLC/sharely",
+    "label": "Sharely",
+    "summary": "Share buttons in your articles and a floating share bar, follow buttons, highlight-to-share, Pinterest pins and a share report. Counts share clicks on your own site without cookies or addresses. Only if you turn them on, asks Facebook, Pinterest, Reddit or Hacker News for an article's share count, and Bitly for short links.",
+    "author": {
+        "name": "Krafty Sprouts Media, LLC",
+        "github": "Krafty-Sprouts-Media-LLC"
+    },
+    "latest": "1.1.0",
+    "updated": "2026-11-22",
+    "listed": "2026-11-22",
+    "works_with": [
+        "1.3"
+    ],
+    "icon": "https://temecms.github.io/directory/assets/krafty-sprouts/sharely/1.1.0/afb7cb1d7bfa2b74.png",
+    "readme": "Share buttons for TemeCMS that fit your theme, work without JavaScript, and\ncount shares without watching your readers.\n\nBy Krafty Sprouts Media, LLC · version 1.0.0 · needs Teme 1.0 or later ·\nGPL-2.0-or-later.\n\n## What it does\n\n- **Share buttons in your articles**: above, below or both, on the content\n  types you choose. Each is a plain link to the network's own share page,\n  so it works with scripts off.\n- **A floating share bar** on the left or right of wide screens, or along\n  the bottom. Teme draws it with a label and a close button.\n- **A different set for phones**, shown below a width you choose, such as\n  the phone's own share menu, WhatsApp and Copy link.\n- **A More button** that opens the rest of the buttons, with no script.\n- **Your own follow buttons**: your profiles, your email address and your\n  site's feed, before or after one of your theme's regions, or after each\n  article. Profile links carry `rel=\"me\"`, so Mastodon can verify your site.\n- **Highlight to share**: a reader selects words in an article, by mouse,\n  touch or keyboard, and a small bar offers to share them.\n- **Share buttons on quotes**: every quote in an article gets a \"Share this\n  quote\" button.\n- **Pinterest**: a pin button on your article's images, and a picker that lets\n  the reader choose which image to pin.\n- **Mastodon done properly**: readers type their own server once; their device\n  remembers it. Works without a script, and with Misskey, Sharkey, Firefish\n  and Iceshrimp too. Sharely only sends a reader to a public server name (never\n  an address number, `localhost`, a port or a path), and always shows a page\n  that says \"You’re leaving for that server to share this post\" with a\n  Continue link first.\n- **Share counts**: off until you turn them on. Counting share clicks on your\n  own site is one setting; asking Facebook, Pinterest, Reddit or Hacker News\n  how often each article was shared there, with a background job, is\n  another. Counts follow an article to a new address.\n- **A share report** under Site › Sharely: share clicks over the last 30\n  days and all time, a chart of clicks a day, and which articles and networks\n  are shared most.\n- **A Sharing panel in the editor**: preview how the item looks on each\n  network, with a title that fits where one is cut, and set the item's own\n  options: no share buttons here, words to post with the link, and a\n  Pinterest description and image.\n- **UTM tags** and **Bitly short links** for shared addresses.\n- **Import from Novashare** when you move a WordPress site that used it.\n\n## Networks\n\nX, Facebook, LinkedIn, Bluesky, Threads, Mastodon, WhatsApp, Telegram,\nReddit, Pinterest, Flipboard, Tumblr, Buffer, LINE, Messenger (phones only),\nVK, Hacker News, email, text message, print, copy link, and the device's own\nshare menu. Follow buttons can also link to your site's feed. Pocket is not\noffered: it closed in July 2025.\n\n## Install\n\nSharely needs Teme 1.3.1 or later. Open **Plugins › Add plugin**, then either:\n\n- **From Teme's directory**: choose the **Directory** tab, find Sharely and\n  install it.\n- **From a zip**: download `sharely-<version>.zip` from the\n  [latest release](https://github.com/Krafty-Sprouts-Media-LLC/sharely/releases/latest),\n  choose the **Upload ZIP** tab, pick the file and confirm with your\n  password. You need the permission to install plugins, and your site's\n  installer service has to be running (it unpacks the zip and installs it).\n  Each release also has a `.sha256` file; to check your download, run\n  `sha256sum -c sharely-<version>.zip.sha256` (or `Get-FileHash` in\n  PowerShell and compare).\n\nThen enable Sharely under **Plugins** and agree to what it asks for. Sharely\nasks to read content, place buttons in articles and on pages, run background\njobs, reach the networks you turn on, answer a few addresses of its own, and\nread a WordPress import. Making your own zip from this repository takes one\ncommand: see [RELEASING.md](https://github.com/Krafty-Sprouts-Media-LLC/sharely/blob/v1.1.0/RELEASING.md).\n\n## Settings\n\nUnder Settings › Plugin settings › Sharely (or Tools › Sharely):\n\n| Section | Settings |\n|---|---|\n| Where the buttons show | Above, below, both or nowhere; Posts, Pages and other content types; the floating bar; a heading |\n| Networks | The share buttons in order; a More button after so many; a different set on phones and the width that counts as a phone |\n| How the buttons look | Shape, size, icons or icons and names, colors (network colors, your site's accent from Settings › Design, or outlined in your theme's colors), alignment |\n| Share counts | Count share clicks (off by default); show counts and the total; hide counts below a number; ask networks for their counts, which ones, and how often; a Facebook access token; your site's old address |\n| Pinterest | Pin buttons on images, the smallest image to pin, the corner; let readers pick the image |\n| Quotes and highlights | Highlight to share and its networks; share buttons on quotes |\n| Follow buttons | Your profiles; where they show; a heading |\n| Shared links | UTM tags; your X account; the Mastodon server readers are offered first; Bitly short links and the access token |\n\nButtons on the settings page: **Bring the article list up to date**,\n**Refresh share counts now**, and **Apply the Novashare settings**.\n\nTo turn the buttons off for one item, open it in the editor, choose\n**Sharing** in the tools, and save \"No share buttons on this item\". Teme's\nown **No inserted content** field also turns them off, together with\nanything else plugins add to that item.\n\n## If your theme has its own share buttons\n\nTurn them off in your theme's settings when you use Sharely, or readers see\ntwo sets. In the Fable look of the Egberipiribo theme that is Settings ›\nDesign › \"Share: show buttons on articles\".\n\n## Moving from Novashare\n\nImport your WordPress site with Teme's importer while Sharely is enabled, and\nagree to Sharely reading the `novashare` and `widget_novashare_follow_widget`\noptions. Then press **Apply the Novashare settings** (on Sharely's settings\npage, or Site › Sharely › Novashare import). Sharely saves what it can and\nlists what to set by hand: the order of your share buttons, your follow\nprofiles, and your Bitly and Facebook tokens (which a plugin may never save\nfor you). Novashare kept each post's own data and counts in a table of its\nown, which Teme's import doesn't read yet, so they don't come across.\n\n## Privacy\n\n**What Sharely stores**, in its own tables:\n\n- each published item's title, address, type and language, and every address\n  it has had;\n- the options you set for an item in the editor;\n- only if you turn counting on: for each item, network and day, how many\n  times its share button was clicked: one number, nothing else;\n- the counts networks report, if you turn that on;\n- a short link per item, if you connect Bitly;\n- a copy of its own settings, for its public addresses to read.\n\n**What Sharely never does:**\n\n- set a cookie, or keep a reader's address, browser, device or the time of a\n  click. To count a click only once per article from one address in ten\n  minutes (so repeated requests can't inflate a count), it keeps, in your\n  site's cache for those ten minutes and nowhere else, a one-way code made\n  from the address, the article and a random number that changes every day.\n  The code can't be turned back into an address, and it is gone after ten\n  minutes;\n- load anything from another site on your pages: icons, styles and scripts\n  all come from your site;\n- send anything anywhere until you turn it on. When you do: asking networks\n  for counts sends each article's address to the networks you check;\n  Bitly gets each article's address once; a reader who shares goes to the\n  network they chose.\n\nThe reader's Mastodon server is remembered in their own browser, never sent\nto your site except as part of the one share they ask for. Sharely only\npasses it on after checking it is a public server name and showing the reader\nwhere they are going.\n\nRemoving Sharely's data (Plugins › Sharely › Remove data, after disabling it)\ndeletes all of the above.\n\n## License\n\nCopyright © 2026 Krafty Sprouts Media, LLC. Sharely is free software, released\nunder the GNU General Public License, version 2 or (at your option) any later\nversion: see [LICENSE](https://github.com/Krafty-Sprouts-Media-LLC/sharely/blob/v1.1.0/LICENSE). It was written fresh. It takes nothing from\nNovashare or any other plugin: no code, markup, styles, icons or wording.\n\n## Accessibility\n\nEvery button is named for screen readers (\"Share on Bluesky (opens in a new\ntab)\"), shows where keyboard focus is, and works by keyboard. Buttons that\nneed a script stay hidden until it runs. Motion stops for readers who ask for\nreduced motion, and the buttons don't print.\n",
+    "changelog": "All notable changes to Sharely. Versions follow semantic versioning.\n\n## 1.1.0 (2026-11-22)\n\nReady for Teme's directory, and for a site to upload as a zip.\n\n### Added\n\n- A zip a site can upload from Plugins › Add plugin, built with\n  `php tools/package.php` (or `composer package`). It holds one top-level\n  folder with only what a site runs, a `composer.json` that carries the\n  version Teme's upload needs, and is checked against the rules Teme applies\n  when it uploads and unpacks a package. The same source always makes the\n  same bytes, so its checksum can be trusted.\n- A release workflow: push a version tag and GitHub builds the zip, checks\n  that the tag, `teme-plugin.json` and this changelog agree, and publishes a\n  release with the zip, its checksum and these notes.\n- A test workflow that runs the unit tests and builds the zip on every push.\n  Both workflows pin every action to a commit.\n- An icon and three screenshots (`art/`), named in the manifest for Teme's\n  directory and the Plugins screen.\n- Install steps in the README, and `RELEASING.md`: how a version becomes a\n  zip, a GitHub release and a listing in Teme's directory.\n- `tools/directory-check.php`, which runs the directory's own inspection on\n  what a tag will be, before the tag is pushed.\n\n### Changed\n\n- Needs Teme 1.3.1 or later (was 1.0): from 1.3.1 Teme installs plugins that\n  require `teme/contracts`, which is what the directory and the upload\n  install.\n- `teme/contracts` is taken from Packagist (`^1.3`), so the package installs\n  and its unit tests run anywhere, with no Teme checkout beside it.\n- The header tool no longer rewrites a file's `@since`, so each file keeps the\n  version it arrived in.\n\n## 1.0.0 (2026-11-17)\n\nThe first release.\n\n- Share buttons in articles (above, below or both) on the content types you\n  choose, as plain links, through Teme's article insertions.\n- A floating share bar on the left, the right or the bottom, through Teme's\n  fixed insertions.\n- 22 networks and tools, in the order you choose, with icons drawn for\n  Sharely, a More button, and a separate set for phones.\n- Shapes, sizes, labels, network or accent or outlined colors and alignment,\n  drawn with the theme's tokens.\n- Share clicks counted on the site with no reader tracking, off until you\n  turn it on, and limited to one counted click per article per address in\n  ten minutes, kept as a one-way code in the site's cache for those ten\n  minutes; counts from Facebook, Pinterest, Reddit and Hacker News fetched\n  by a scheduled job; a minimum count; counts that follow an item's old\n  addresses.\n- Pinterest pin buttons on images and an image picker.\n- Highlight to share by mouse, touch or keyboard, and share buttons on quotes.\n- Mastodon sharing to the reader's own server, remembered on their device,\n  with or without a script. Only a public host name is accepted (no address\n  numbers, `localhost`, private or internal names, user names, ports or\n  paths), and a page that names the server, with a Continue link, comes\n  before any redirect; a click is counted only when the reader continues.\n- Follow buttons for the site's profiles, email and feed.\n- UTM tags and Bitly short links.\n- A share report in Sharely's own area, and a Sharing panel in the editor\n  that previews each network's card and holds the item's options.\n- Import of Novashare's settings from a WordPress site.\n",
+    "screenshots": [
+        {
+            "url": "https://temecms.github.io/directory/assets/krafty-sprouts/sharely/1.1.0/497ee20366d59c4f.png",
+            "caption": "Share buttons above an article with counts, a floating bar at the side, and quote and follow buttons."
+        },
+        {
+            "url": "https://temecms.github.io/directory/assets/krafty-sprouts/sharely/1.1.0/e4da9e770f65513e.png",
+            "caption": "A separate set of buttons for phones, including the device's own share menu."
+        },
+        {
+            "url": "https://temecms.github.io/directory/assets/krafty-sprouts/sharely/1.1.0/beda8edcfdb72feb.png",
+            "caption": "Four looks: network colors, your site's accent, outlined in your theme's colors, and icons only."
+        }
+    ],
+    "capabilities": [
+        {
+            "key": "content.read",
+            "words": "Read your posts, pages and other content, including drafts"
+        },
+        {
+            "key": "content.insert",
+            "words": "content.insert"
+        },
+        {
+            "key": "pages.insert",
+            "words": "pages.insert"
+        },
+        {
+            "key": "jobs",
+            "words": "jobs"
+        },
+        {
+            "key": "http",
+            "words": "Connect to services outside this site: graph.facebook.com, widgets.pinterest.com, www.reddit.com, hn.algolia.com, api-ssl.bitly.com"
+        },
+        {
+            "key": "routes.public",
+            "words": "routes.public"
+        },
+        {
+            "key": "import.wordpress",
+            "words": "import.wordpress"
+        }
+    ],
+    "links": {
+        "source": "https://github.com/Krafty-Sprouts-Media-LLC/sharely",
+        "issues": "https://github.com/Krafty-Sprouts-Media-LLC/sharely/issues",
+        "docs": null,
+        "support": null,
+        "security": null
+    },
+    "license": "GPL-2.0-or-later",
+    "php": "^8.4",
+    "stars": 0,
+    "issues": 0,
+    "releases": [
+        {
+            "version": "1.1.0",
+            "date": "2026-11-22",
+            "works_with": [
+                "1.3"
+            ],
+            "dist": {
+                "url": "https://api.github.com/repos/Krafty-Sprouts-Media-LLC/sharely/zipball/v1.1.0",
+                "sha256": "80867225dd3650768316ec26a5ccdf492a926b590d79e201dee7cb1292b20f05"
+            },
+            "held": false
+        }
+    ]
+}

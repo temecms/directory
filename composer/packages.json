@@ -1,5 +1,45 @@
 {
     "packages": {
+        "krafty-sprouts/sharely": {
+            "1.1.0": {
+                "name": "krafty-sprouts/sharely",
+                "description": "Sharely for TemeCMS: share buttons, a floating share bar, share counts kept on the site, Pinterest, highlight-to-share and follow buttons.",
+                "type": "teme-plugin",
+                "license": "GPL-2.0-or-later",
+                "authors": [
+                    {
+                        "name": "Krafty Sprouts Media, LLC"
+                    }
+                ],
+                "support": {
+                    "issues": "https://github.com/Krafty-Sprouts-Media-LLC/sharely/issues",
+                    "source": "https://github.com/Krafty-Sprouts-Media-LLC/sharely"
+                },
+                "require": {
+                    "php": "^8.4",
+                    "teme/contracts": "^1.3"
+                },
+                "autoload": {
+                    "psr-4": {
+                        "KraftySprouts\\Sharely\\": "src/"
+                    }
+                },
+                "version": "1.1.0",
+                "version_normalized": "1.1.0.0",
+                "dist": {
+                    "type": "zip",
+                    "url": "https://api.github.com/repos/Krafty-Sprouts-Media-LLC/sharely/zipball/v1.1.0",
+                    "reference": "c5aba7ee0a656dc0d31519e669c4cc2dfd4cb44e",
+                    "shasum": "613afd768acf6839427142a9b307aed94468cf04"
+                },
+                "source": {
+                    "type": "git",
+                    "url": "https://github.com/Krafty-Sprouts-Media-LLC/sharely.git",
+                    "reference": "c5aba7ee0a656dc0d31519e669c4cc2dfd4cb44e"
+                },
+                "time": "2026-11-22T09:02:53Z"
+            }
+        },
         "teme/seo": {
             "1.0.1": {
                 "name": "teme/seo",
@@ -35,6 +75,41 @@
                     "reference": "3220f894a631c2682f6c0f36cd81cc45115bd16c"
                 },
                 "time": "2026-11-20T05:32:52Z"
+            },
+            "1.0.2": {
+                "name": "teme/seo",
+                "type": "teme-plugin",
+                "description": "Teme SEO: internal links, cornerstone items, a site-wide audit, bulk titles and descriptions, Search Console and AI help for Teme.",
+                "keywords": [
+                    "teme",
+                    "seo",
+                    "internal links",
+                    "search console"
+                ],
+                "license": "MIT",
+                "require": {
+                    "php": "^8.4",
+                    "teme/contracts": "^1.3"
+                },
+                "autoload": {
+                    "psr-4": {
+                        "Teme\\Seo\\": "src/"
+                    }
+                },
+                "version": "1.0.2",
+                "version_normalized": "1.0.2.0",
+                "dist": {
+                    "type": "zip",
+                    "url": "https://api.github.com/repos/temecms/teme-seo/zipball/v1.0.2",
+                    "reference": "fa4a5328d4aea1c4db57b6bfeaff660788563842",
+                    "shasum": "8d0217973d8ae21039d419e3a2b874fe2671f5d3"
+                },
+                "source": {
+                    "type": "git",
+                    "url": "https://github.com/temecms/teme-seo.git",
+                    "reference": "fa4a5328d4aea1c4db57b6bfeaff660788563842"
+                },
+                "time": "2026-11-22T07:10:04Z"
             }
         },
         "temecms/theme-temecms": {
